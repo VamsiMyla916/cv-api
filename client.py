@@ -12,7 +12,7 @@ import av  # Helper library for video frames
 # --- Page Configuration ---
 st.set_page_config(
     page_title="Live Occupancy Counter",
-    page_icon="🧑‍🤝‍🧑",
+    
     layout="wide"
 )
 
@@ -20,7 +20,7 @@ st.set_page_config(
 API_URL = "https://vamsimyla-person-counter-api.hf.space/detect/"
 
 # --- Page Title ---
-st.title("🧑‍🤝‍🧑 Real-Time Occupancy Counter")
+st.title("Real-Time Occupancy Counter")
 st.caption("This web app calls a containerized FastAPI-YOLOv8 backend to count people.")
 
 # --- Function to draw boxes (we'll use this twice) ---
