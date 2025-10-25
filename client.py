@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 # --- API URL ---
-API_URL = "http://127.0.0.1:8000/detect/"
+API_URL = "https://vamsimyla-person-counter-api.hf.space/detect/"
 
 # --- Page Title ---
 st.title("🧑‍🤝‍🧑 Real-Time Occupancy Counter")
