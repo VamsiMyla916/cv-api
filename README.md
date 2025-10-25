@@ -79,11 +79,11 @@ Workflow:
 graph TD
     A[User's Browser] -->|1. User loads Streamlit URL| B[Streamlit Cloud<br>(client.py)]
     B -->|2. User uploads image<br>or starts webcam| B
-    B -->|3. Sends frame as HTTP POST request| C[Hugging Face Space<g;br>(FastAPI Backend: main.py)]
+    B -->|3. Sends frame as HTTP POST request| C[Hugging Face Space<br>(FastAPI Backend: main.py)]
     C -->|4. Processes frame with YOLOv8| C
     C -->|5. Returns JSON response<br>(count + bounding boxes)| B
     B -->|6. Draws boxes on frame<br>Displays result to user| A
-```
+
 
 Step-by-Step Breakdown:
 Load App: The user visits the public Streamlit Cloud URL.
@@ -101,11 +101,15 @@ Display: The Streamlit app receives this JSON, uses OpenCV to draw the bounding 
 ## Project Structure
 
 ```
+
 cv_api/
-├── .dockerignore       # Ignores venv and cache
-├── Dockerfile          # Blueprint for the backend API container
-├── main.py             # The FastAPI backend API server
-├── client.py           # The Streamlit frontend web app
-├── requirements.txt    # Python libraries for the backend (used by Docker)
-└── my_test_image.jpg   # An image for testing
+├── .dockerignore # Ignores venv and cache
+├── Dockerfile # Blueprint for the backend API container
+├── main.py # The FastAPI backend API server
+├── client.py # The Streamlit frontend web app
+├── requirements.txt # Python libraries for the backend (used by Docker)
+└── my_test_image.jpg # An image for testing
+
+```
+
 ```
