@@ -73,18 +73,6 @@ This project is not a single, monolithic app. It's a decoupled, client-server sy
 
 The Frontend (Streamlit) is completely separate from the Backend (FastAPI). This means the AI model can be scaled, updated, or maintained independently without ever taking down the user-facing app.
 
-Workflow:
-
-```mermaid
-graph TD
-    A[User's Browser] -->|1. User loads Streamlit URL| B[Streamlit Cloud<br>(client.py)]
-    B -->|2. User uploads image<br>or starts webcam| B
-    B -->|3. Sends frame as HTTP POST request| C[Hugging Face Space<br>(FastAPI Backend: main.py)]
-    C -->|4. Processes frame with YOLOv8| C
-    C -->|5. Returns JSON response<br>(count + bounding boxes)| B
-    B -->|6. Draws boxes on frame<br>Displays result to user| A
-
-
 Step-by-Step Breakdown:
 Load App: The user visits the public Streamlit Cloud URL.
 
@@ -109,6 +97,8 @@ cv_api/
 ├── client.py # The Streamlit frontend web app
 ├── requirements.txt # Python libraries for the backend (used by Docker)
 └── my_test_image.jpg # An image for testing
+
+```
 
 ```
 
