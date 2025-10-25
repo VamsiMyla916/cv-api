@@ -77,12 +77,12 @@ Workflow:
 
 ```mermaid
 graph TD
-A[🧑‍💻 User's Browser] -->|1. User loads Streamlit URL| B[🌐 Streamlit Cloud<br>(client.py)];
-B -->|2. User uploads image<br>or starts webcam| B;
-B -->|3. Sends frame as HTTP POST request| C[🐳 Hugging Face Space<br>(FastAPI Backend: main.py)];
-C -->|4. Processes frame with YOLOv8| C;
-C -->|5. Returns JSON response<br>(count + bounding boxes)| B;
-B -->|6. Draws boxes on frame<br>Displays result to user| A;
+    A[🧑‍💻 User's Browser] -->|1. User loads Streamlit URL| B[🌐 Streamlit Cloud<br>(client.py)];
+    B -->|2. User uploads image<br>or starts webcam| B;
+    B -->|3. Sends frame as HTTP POST request| C[🐳 Hugging Face Space<br>(FastAPI Backend: main.py)];
+    C -->|4. Processes frame with YOLOv8| C;
+    C -->|5. Returns JSON response<br>(count + bounding boxes)| B;
+    B -->|6. Draws boxes on frame<br>Displays result to user| A;
 ```
 
 Step-by-Step Breakdown:
