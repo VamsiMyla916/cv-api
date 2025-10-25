@@ -75,7 +75,7 @@ The Frontend (Streamlit) is completely separate from the Backend (FastAPI). This
 
 Workflow:
 
-```
+```mermaid
 graph TD
 A[🧑‍💻 User's Browser] -->|1. User loads Streamlit URL| B[🌐 Streamlit Cloud<br>(client.py)];
 B -->|2. User uploads image<br>or starts webcam| B;
