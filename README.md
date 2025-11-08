@@ -136,6 +136,7 @@ graph TD
 
 ## Project Structure
 
+```
 cv_api/
 ├── .dockerignore # Ignores venv and cache
 ├── Dockerfile # Blueprint for the backend API container
@@ -143,11 +144,4 @@ cv_api/
 ├── client.py # The Streamlit frontend web app
 ├── requirements.txt # Python libraries for the backend (used by Docker)
 └── my_test_image.jpg # An image for testing
-
-```
-
-```
-
-```
-
 ```
