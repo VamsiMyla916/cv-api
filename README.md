@@ -7,9 +7,6 @@ This project demonstrates a production-ready, decoupled architecture:
 - **Backend:** A **FastAPI** + **YOLOv8** object detection API, containerized with **Docker**.
 - **Frontend:** A **Streamlit** web app that acts as a client to the API.
 
-![Demo GIF](link-to-your-demo.gif)
-_(Replace the line above with a link to your GIF!)_
-
 ---
 
 ## Features
@@ -68,7 +65,8 @@ The backend API **must** be running for the client to work.
 
 ---
 
-Application Workflow & Architecture
+# About:
+
 This project is not a single, monolithic app. It's a decoupled, client-server system, which is a modern, scalable approach to building AI applications.
 
 The Frontend (Streamlit) is completely separate from the Backend (FastAPI). This means the AI model can be scaled, updated, or maintained independently without ever taking down the user-facing app.
