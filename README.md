@@ -11,10 +11,10 @@ This project demonstrates a production-ready, decoupled architecture:
 
 ## Features
 
-- **⚡ Real-Time Webcam Detection:** Uses `streamlit-webrtc` to send webcam frames to the API and draw bounding boxes on the live feed.
-- **📂 Static Image Upload:** A "Before & After" view for counting people in uploaded JPG/PNG files.
-- **🐳 Dockerized Backend:** The entire FastAPI backend, including the 500MB+ of ML libraries (PyTorch, OpenCV), is packaged in a single Docker container.
-- **🚀 Decoupled Architecture:** The Streamlit frontend is _completely separate_ from the AI backend. This is a scalable, real-world design.
+- ** Real-Time Webcam Detection:** Uses `streamlit-webrtc` to send webcam frames to the API and draw bounding boxes on the live feed.
+- ** Static Image Upload:** A "Before & After" view for counting people in uploaded JPG/PNG files.
+- ** Dockerized Backend:** The entire FastAPI backend, including the 500MB+ of ML libraries (PyTorch, OpenCV), is packaged in a single Docker container.
+- ** Decoupled Architecture:** The Streamlit frontend is _completely separate_ from the AI backend. This is a scalable, real-world design.
 
 ---
 
@@ -84,7 +84,7 @@ Respond: The API sends back a clean JSON response (e.g., {"person_count": 2, "de
 
 Display: The Streamlit app receives this JSON, uses OpenCV to draw the bounding boxes from the coordinates, and displays the final annotated image back to the user—all in a fraction of a second.
 
-## 🚀 Application Architecture & Workflow
+## Application Architecture & Workflow
 
 This project uses a decoupled, 3-tier architecture. The **Frontend Client (Streamlit)** is completely separate from the **Backend AI (FastAPI)**, which runs as a scalable microservice in its own container.
 
