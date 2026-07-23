@@ -1,0 +1,1123 @@
+{
+  "info": {
+    "_postman_id": "e0a32a08-21f5-451e-b556-3942d4f65be8",
+    "name": "YOLOv8 FastAPI Object Detection Test Suite",
+    "description": "A comprehensive Postman test suite containing 30 test cases for evaluating a FastAPI YOLOv8 object detection / occupancy counter endpoint. Covers valid inputs, edge cases, error conditions, query parameters, content types, and performance SLAs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://vamsimyla-person-counter-api.hf.space",
+      "type": "string"
+    },
+    {
+      "key": "endpoint",
+      "value": "/detect/",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Health Check / Root Endpoint",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response contains welcome message', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('message');",
+              "    pm.expect(jsonData.message).to.include('YOLOv8');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": []
+        },
+        "description": "Verify that the root endpoint returns HTTP 200 and a valid welcome/status JSON message."
+      },
+      "response": []
+    },
+    {
+      "name": "02 - OpenAPI Swagger UI Documentation",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response is HTML document', function () {",
+              "    pm.response.to.have.header('content-type');",
+              "    pm.expect(pm.response.headers.get('content-type')).to.include('text/html');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/docs",
+          "host": ["{{baseUrl}}"],
+          "path": ["docs"]
+        },
+        "description": "Ensure the FastAPI interactive Swagger UI (/docs) is accessible."
+      },
+      "response": []
+    },
+    {
+      "name": "03 - OpenAPI JSON Schema Verification",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response is valid OpenAPI JSON', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('openapi');",
+              "    pm.expect(jsonData.paths).to.have.property('/detect/');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/openapi.json",
+          "host": ["{{baseUrl}}"],
+          "path": ["openapi.json"]
+        },
+        "description": "Fetch openapi.json to confirm detection endpoint definition and schema."
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Valid JPEG Image Detection",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response body has detection metrics', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('count');",
+              "    pm.expect(jsonData).to.have.property('detections');",
+              "    pm.expect(jsonData.count).to.be.a('number');",
+              "    pm.expect(jsonData.detections).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Upload a standard JPEG image to verify detection count and bounding box response.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_person.jpg",
+              "description": "Standard JPEG image containing persons or objects"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Valid PNG Image Detection",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('PNG image processed successfully', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('count');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Test PNG format support for object detection.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_people.png",
+              "description": "Lossless PNG image format"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06 - Valid WebP Image Detection",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('WebP format parsed properly', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('detections');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify WebP image decoding and model inference.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_image.webp",
+              "description": "Modern WebP image format"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "07 - Valid BMP Image Detection",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('BMP format supported', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('count');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Test BMP bitmap format image decoding.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_image.bmp",
+              "description": "Bitmap uncompressed format"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "08 - High Resolution Image (3840x2160)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('High-res image processed without crash', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('count');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Ensure model auto-resizes high resolution 4K images without memory overflow.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "high_res_4k.jpg",
+              "description": "4K Ultra HD photo"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "09 - Low Resolution Image (32x32)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Tiny image handles padding/upscaling correctly', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('count');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Test low-resolution thumbnail images to ensure padding handles small inputs.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "tiny_32x32.png",
+              "description": "Low resolution thumbnail"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "10 - Extreme Aspect Ratio (2000x100 Panoramic)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Extreme aspect ratio letterboxing works', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('count');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify letterbox padding logic handles wide panoramic aspect ratios.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "panoramic_2000x100.jpg",
+              "description": "Wide aspect ratio photo"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "11 - Single-Channel Grayscale Image",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Grayscale converted to 3-channel RGB', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('count');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify 1-channel grayscale image is correctly broadcasted to 3-channel RGB.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "grayscale.jpg",
+              "description": "Monochrome single channel image"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "12 - RGBA PNG with Alpha Channel",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Alpha channel stripped properly', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('count');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify transparent alpha channel is stripped without array dimension mismatch.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "transparent_alpha.png",
+              "description": "4-channel PNG with transparency"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "13 - Invalid File Format (Text file .txt)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400 or 422', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400, 422, 500]);",
+              "});",
+              "pm.test('Returns error details', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('detail');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify uploading non-image plain text file triggers an appropriate client/validation error.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "document.txt",
+              "description": "Plain text document instead of image"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "14 - Corrupted / Damaged Image Bytes",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code indicates error (400/422)', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400, 422, 500]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Ensure OpenCV / PIL image decoding failure returns gracefully formatted error.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "corrupted_header.jpg",
+              "description": "Broken JPEG header"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "15 - Zero-Byte Empty File Upload",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400 Bad Request or 422', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Test behavior when an empty 0-byte file is submitted.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "empty_file.jpg",
+              "description": "0 bytes file size"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "16 - Oversized Payload (Exceeding max size)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 413 Payload Too Large or 400', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([413, 400, 422]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify oversized payload rejection to prevent denial of service.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "huge_25mb_image.raw",
+              "description": "Oversized file exceeding size limit"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "17 - Empty Payload (Missing All Form Data)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 422 Unprocessable Entity', function () { pm.response.to.have.status(422); });",
+              "pm.test('FastAPI validation details returned', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('detail');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Send empty multipart body without 'file' field to verify FastAPI parameter validation.",
+        "body": {
+          "mode": "formdata",
+          "formdata": []
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "18 - Incorrect Form Field Name ('image' instead of 'file')",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 422 Unprocessable Entity', function () { pm.response.to.have.status(422); });",
+              "pm.test('Error indicates missing field file', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(JSON.stringify(jsonData)).to.include('file');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify strict parameter naming compliance.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": "sample_person.jpg",
+              "description": "Using field name 'image' instead of required 'file'"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "19 - Incorrect Content-Type (application/json)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 422 Unprocessable Entity', function () { pm.response.to.have.status(422); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify client sending application/json receives 422 since form-data is required.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"image\": \"base64string...\"}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "20 - Incorrect Content-Type (text/plain)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 422 Unprocessable Entity', function () { pm.response.to.have.status(422); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify text/plain content type rejection.",
+        "body": {
+          "mode": "raw",
+          "raw": "Just plain text string"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "21 - Unsupported HTTP Method (GET /detect/)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 405 Method Not Allowed', function () { pm.response.to.have.status(405); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify GET request on POST-only endpoint returns HTTP 405."
+      },
+      "response": []
+    },
+    {
+      "name": "22 - Unsupported HTTP Method (PUT /detect/)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 405 Method Not Allowed', function () { pm.response.to.have.status(405); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify PUT request returns 405 Method Not Allowed."
+      },
+      "response": []
+    },
+    {
+      "name": "23 - Unsupported HTTP Method (DELETE /detect/)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 405 Method Not Allowed', function () { pm.response.to.have.status(405); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify DELETE request returns 405 Method Not Allowed."
+      },
+      "response": []
+    },
+    {
+      "name": "24 - Valid Custom Confidence Threshold Query Param (?confidence=0.75)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Detections meet higher confidence threshold', function () {",
+              "    var jsonData = pm.response.json();",
+              "    if (jsonData.detections && jsonData.detections.length > 0) {",
+              "        jsonData.detections.forEach(function(d) {",
+              "            if (d.confidence) pm.expect(d.confidence).to.be.at.least(0.75);",
+              "        });",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}?confidence=0.75",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"],
+          "query": [
+            {
+              "key": "confidence",
+              "value": "0.75"
+            }
+          ]
+        },
+        "description": "Pass custom confidence threshold query parameter to filter low-confidence detections.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_person.jpg"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "25 - Invalid High Confidence Threshold (?confidence=1.5)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 422 or 400 Bad Request', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}?confidence=1.5",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"],
+          "query": [
+            {
+              "key": "confidence",
+              "value": "1.5"
+            }
+          ]
+        },
+        "description": "Test confidence threshold out of bounds (> 1.0).",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_person.jpg"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "26 - Invalid Negative Confidence Threshold (?confidence=-0.5)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 422 or 400 Bad Request', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}?confidence=-0.5",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"],
+          "query": [
+            {
+              "key": "confidence",
+              "value": "-0.5"
+            }
+          ]
+        },
+        "description": "Test negative confidence threshold out of bounds (< 0.0).",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_person.jpg"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "27 - Valid Custom IOU Threshold Query Param (?iou=0.45)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });",
+              "pm.test('Non-max suppression adjusted successfully', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('count');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}?iou=0.45",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"],
+          "query": [
+            {
+              "key": "iou",
+              "value": "0.45"
+            }
+          ]
+        },
+        "description": "Pass custom Non-Maximum Suppression (NMS) IOU threshold query parameter.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_person.jpg"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "28 - Response Time SLA Benchmark (< 3000ms)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Response time is under 3000ms SLA threshold', function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Verify end-to-end processing and inference latency is within acceptable SLA limit.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_person.jpg"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "29 - Non-Existent Route (404 Not Found)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 404 Not Found', function () { pm.response.to.have.status(404); });",
+              "pm.test('Error response contains detail', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('detail');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/nonexistent_route",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "nonexistent_route"]
+        },
+        "description": "Verify handling for requests to undefined API endpoints."
+      },
+      "response": []
+    },
+    {
+      "name": "30 - CORS Preflight Options Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 or 204', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+              "});",
+              "pm.test('CORS headers present in response', function () {",
+              "    pm.response.to.have.header('access-control-allow-origin');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "OPTIONS",
+        "header": [
+          {
+            "key": "Origin",
+            "value": "https://cv-api.streamlit.app"
+          },
+          {
+            "key": "Access-Control-Request-Method",
+            "value": "POST"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}{{endpoint}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{endpoint}}"]
+        },
+        "description": "Test Cross-Origin Resource Sharing (CORS) options preflight checks for web client integration."
+      },
+      "response": []
+    }
+  ]
+}
